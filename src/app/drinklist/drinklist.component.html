@@ -1,0 +1,39 @@
+<div class="container">
+
+    <div>
+        <h3>Select Ingredients:</h3>
+        <div class="list-group">
+            
+                <button *ngFor="let ingredient of ingredients" [class.selected]="ingredient === selectedIngredient" type="button" class="list-group-item list-group-item-action" (click)="onSelectIngredient(ingredient)">
+                    <span class="name">{{ingredient.name}}</span>
+                </button>
+
+        </div>
+
+    </div>
+
+    <div>
+        <div>
+            <h3>Select Drink:</h3>
+        </div>
+        <li *ngFor="let recipe of recipes">
+            <button [class.selected]="recipe === selectedRecipe" type="button" (click)="onSelectRecipe(recipe)">
+                <span class="name">{{recipe.name}}</span>
+            </button>
+        </li>
+    </div>
+
+    <div>
+        <div>
+            <h3>Recipe:</h3>
+        </div>
+        <div *ngIf="selectedRecipe">
+            <h3>{{selectedRecipe.name}} </h3>
+            <!-- <div><h3>Ingredients Needed: {{selectedrecipe.ingredients}}</h3></div> -->
+            <div>
+                <h3>Recipe: {{selectedRecipe.recipe}}</h3>
+            </div>
+
+        </div>
+    </div>
+</div>
