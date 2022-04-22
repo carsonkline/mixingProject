@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SortlistService } from './sortlist.service';
+import { BackendService } from './backend.service';
 
-describe('SortlistService', () => {
-  let service: SortlistService;
+describe('BackendService', () => {
+  let service: BackendService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SortlistService);
+    service = TestBed.inject(BackendService);
   });
 
   it('should be created', () => {

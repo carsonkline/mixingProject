@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Recipe } from '../recipes';
-import { storedRecipes } from '../official-recipe';
-import { SortlistService } from '../sortlist.service';
-import { storedIngredients } from '../ingredients';
 import { Ingredient } from '../ingredient';
+import { BackendService } from '../backend.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -12,25 +11,35 @@ import { Ingredient } from '../ingredient';
   styleUrls: ['./drinklist.component.css']
 })
 export class DrinklistComponent implements OnInit {
-  recipes: Recipe[] = storedRecipes;
+  recipes: Recipe[] | undefined;
   selectedRecipe?: Recipe;
-  ingredients = storedIngredients;
+  ingredients: Ingredient[] | undefined;
 
+  ingredientForm = new FormGroup({
+    name: new FormControl('ingredient name')
+  })
 
   selectedIngredients: number[] = [];
 
   get filteredRecipe(): Recipe[] {
     /* This fuction filters the recipe array to diplay recipies based on availible ingredients */
-    return this.recipes.filter(recipe => {
+    return this.recipes?.filter(recipe => {
       for (let ingredient of recipe.ingredients) {
-        if (this.selectedIngredients.includes(ingredient) == false)
+        if (this.selectedIngredients.includes(ingredient.id) == false)
           return false
       }
       return true
     })
   }
 
-  constructor() { }
+  constructor(public backendService: BackendService) {
+    this.backendService.getIngredients().subscribe(ingredients => {
+      this.ingredients = ingredients
+    })
+    this.backendService.getRecipes().subscribe(recipes => {
+      this.recipes = recipes
+    })
+  }
   ngOnInit(): void {
   }
   onSelectRecipe(recipe: Recipe): void {
@@ -38,6 +47,7 @@ export class DrinklistComponent implements OnInit {
   }
   onSelectIngredient(ingredient: Ingredient): void {
     /*  Adds or Removes  */
+
     if (this.selectedIngredients.includes(ingredient.id)) {
       const index = this.selectedIngredients.indexOf(ingredient.id);
       if (index > -1) {
@@ -47,6 +57,13 @@ export class DrinklistComponent implements OnInit {
     else {
       this.selectedIngredients.push(ingredient.id);
     }
-
+    console.log(ingredient)
+  }
+  onSubmit() {
+    this.backendService.createIngredient(this.ingredientForm.value).subscribe()
+    this.ingredients?.push(this.ingredientForm.value)
+  }
+  deleteIngredient(ingredient: Ingredient) {
+    this.backendService.deleteIngredient(ingredient).subscribe()
   }
 }
